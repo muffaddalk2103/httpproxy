@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,14 +27,14 @@ import com.http.proxy.httpproxy.service.ProxyRequestFactory;
 public class ProxyController {
 	private final static Logger LOGGER = LoggerFactory.getLogger(ProxyController.class); 
 	
+	@Autowired
+	private ProxyRequestFactory proxyRequestFactory;
 	@RequestMapping(value="/proxy/**")
 	public ResponseEntity<?> handleRequest(HttpServletRequest request){
 		LOGGER.info("inside handleRequest of ProxyController");
-		String requestUri = request.getRequestURI();
-		requestUri = requestUri.substring(7,requestUri.length());
 		try {
-			ProxyRequest proxyRequest = ProxyRequestFactory.getProxyRequest(request);
-			return proxyRequest.processRequest();
+			ProxyRequest proxyRequest = proxyRequestFactory.getProxyRequest(request);
+			return proxyRequest.processRequest(request);
 		} catch (final HttpClientErrorException e) {
 			LOGGER.error(e.getMessage(),e);
 			return new ResponseEntity<>(e.getResponseBodyAsByteArray(), e.getResponseHeaders(), e.getStatusCode());

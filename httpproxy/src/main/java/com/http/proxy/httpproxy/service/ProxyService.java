@@ -42,7 +42,7 @@ public class ProxyService {
 		NOT_ACCEPTED_HEADERS = new HashSet<>(Arrays.asList(strs.split(",")));
 	}
 
-	static void prepareHeader(HttpServletRequest httpServletRequest,HttpUriRequest request){
+	void prepareHeader(HttpServletRequest httpServletRequest,HttpUriRequest request){
 		LOGGER.info("inside prepareHeader of ProxyService");
 		Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
 		while(headerNames.hasMoreElements()){
@@ -52,7 +52,7 @@ public class ProxyService {
 			}
 		}
 	}
-	static ResponseEntity<?> processRequest(HttpUriRequest request) throws IOException{
+	ResponseEntity<?> processRequest(HttpUriRequest request) throws IOException{
 		LOGGER.info("inside processRequest of ProxyService");
 		try (CloseableHttpClient httpClient = HttpClients.createDefault();
 				CloseableHttpResponse response = httpClient.execute(request)) {
@@ -70,7 +70,7 @@ public class ProxyService {
 		}
 	}
 	
-	static String getRequestURL(HttpServletRequest request){
+	String getRequestURL(HttpServletRequest request){
 		String requestUri = request.getRequestURI();
 		return requestUri.substring(7,requestUri.length());
 	}
