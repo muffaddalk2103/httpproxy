@@ -23,7 +23,7 @@ public class ProxyRequestFactory {
 	@Autowired
 	private List<ProxyRequest> proxyRequests;
 	private static final Map<String, Map<String,ProxyRequest>> PROXY_REQUEST_CACHE= new HashMap<>();
-	
+
 	@PostConstruct
 	public void initProxyRequestCache(){
 		for(ProxyRequest proxyRequest:proxyRequests){
@@ -34,7 +34,9 @@ public class ProxyRequestFactory {
 	public ProxyRequest getProxyRequest(HttpServletRequest request) throws Exception{
 		switch(request.getMethod().toUpperCase()){
 		case "POST":
-			return PROXY_REQUEST_CACHE.get(request.getMethod().toLowerCase()).get(request.getContentType().toLowerCase());
+			String contentType = "application/x-www-form-urlencoded";
+			contentType = request.getContentType()==null?contentType:request.getContentType().toLowerCase();
+			return PROXY_REQUEST_CACHE.get(request.getMethod().toLowerCase()).get(contentType);
 		case "GET":
 			return PROXY_REQUEST_CACHE.get(request.getMethod().toLowerCase()).get("all");
 		default:

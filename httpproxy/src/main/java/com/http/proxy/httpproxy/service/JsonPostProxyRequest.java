@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class JsonPostProxyRequest implements ProxyRequest {
-	private final static Logger LOGGER = LoggerFactory.getLogger(ProxyService.class); 
+	private final static Logger LOGGER = LoggerFactory.getLogger(JsonPostProxyRequest.class); 
 	@Autowired
 	private ProxyService proxyService;
 	/* (non-Javadoc)

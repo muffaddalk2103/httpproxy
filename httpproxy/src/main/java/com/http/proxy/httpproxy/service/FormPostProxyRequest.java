@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class FormPostProxyRequest implements ProxyRequest {
-	private final static Logger LOGGER = LoggerFactory.getLogger(ProxyService.class); 
+	private final static Logger LOGGER = LoggerFactory.getLogger(FormPostProxyRequest.class); 
 	@Autowired
 	private ProxyService proxyService;
 	/* (non-Javadoc)
@@ -39,11 +39,13 @@ public class FormPostProxyRequest implements ProxyRequest {
 		proxyService.prepareHeader(httpServletRequest, request);
 		List<NameValuePair> urlParameters = new ArrayList<>();
 		Enumeration<String> parameterNames = httpServletRequest.getParameterNames();
-		while(parameterNames.hasMoreElements()){
-			String parameterName = parameterNames.nextElement();
-			urlParameters.add(new BasicNameValuePair(parameterName, httpServletRequest.getParameter(parameterName)));	
+		if(parameterNames.hasMoreElements()){
+			while(parameterNames.hasMoreElements()){
+				String parameterName = parameterNames.nextElement();
+				urlParameters.add(new BasicNameValuePair(parameterName, httpServletRequest.getParameter(parameterName)));	
+			}
+			request.setEntity(new UrlEncodedFormEntity(urlParameters));
 		}
-		request.setEntity(new UrlEncodedFormEntity(urlParameters));
 		return proxyService.processRequest(request);
 	}
 	@Override

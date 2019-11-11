@@ -17,7 +17,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,16 +54,14 @@ public class ProxyService {
 	}
 	ResponseEntity<?> processRequest(HttpUriRequest request) throws IOException{
 		LOGGER.info("inside processRequest of ProxyService");
-		try (CloseableHttpClient httpClient = HttpClients.createDefault();
+		try (CloseableHttpClient httpClient = HttpClientBuilder.create().disableDefaultUserAgent().disableContentCompression().build();
 				CloseableHttpResponse response = httpClient.execute(request)) {
-			String result=null;
 			HttpEntity entity = (HttpEntity) response.getEntity();
 			if (entity != null) {
-				result = EntityUtils.toString(entity);
 				final HttpHeaders responseHeaders = new HttpHeaders();
 				List<Header> headers= Arrays.asList(response.getAllHeaders());
 				headers.stream().forEach(e -> responseHeaders.put(e.getName(), java.util.Arrays.asList(e.getValue())));
-				return new ResponseEntity<String>(result,responseHeaders, HttpStatus.valueOf(response.getStatusLine().getStatusCode())); 
+				return new ResponseEntity<byte[]>(EntityUtils.toByteArray(entity),responseHeaders, HttpStatus.valueOf(response.getStatusLine().getStatusCode())); 
 			}else{
 				return new ResponseEntity<String>("Unable to process request",HttpStatus.BAD_GATEWAY); 
 			}

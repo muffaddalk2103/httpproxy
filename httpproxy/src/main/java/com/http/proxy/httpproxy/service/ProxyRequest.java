@@ -3,8 +3,6 @@
  */
 package com.http.proxy.httpproxy.service;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.ResponseEntity;
@@ -14,7 +12,7 @@ import org.springframework.http.ResponseEntity;
  *
  */
 public interface ProxyRequest {
-	ResponseEntity<?> processRequest(HttpServletRequest httpServletRequest) throws IOException;
+	ResponseEntity<?> processRequest(HttpServletRequest httpServletRequest) throws Exception;
 	String getSupportedHttpMethod();
 	String getSupportedContentType();
 }
